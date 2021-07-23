@@ -1,0 +1,88 @@
+---
+- name: BIG-IP SETUP
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+
+  - name: Setup provider
+    set_fact:
+      provider:
+        server: 10.1.1.4
+        user: admin
+        password: admin
+        server_port: 443
+        validate_certs: "no"
+
+  - name: ADD POOL MEMBERS
+    bigip_pool_member:
+      provider: "{{provider}}"
+      state: "present"
+      name: "192.168.100.10"
+      host: "192.168.100.10"
+      port: "80"
+      pool: "web-http-pool"
+
+  - name: ADD POOL MEMBERS
+    bigip_pool_member:
+      provider: "{{provider}}"
+      state: "present"
+      name: "192.168.100.11"
+      host: "192.168.100.11"
+      port: "80"
+      pool: "web-http-pool"
+
+  - name: ADD POOL MEMBERS
+    bigip_pool_member:
+      provider: "{{provider}}"
+      state: "present"
+      name: "192.168.100.12"
+      host: "192.168.100.12"
+      port: "80"
+      pool: "web-http-pool"
+
+  - name: ADD POOL MEMBERS
+    bigip_pool_member:
+      provider: "{{provider}}"
+      state: "present"
+      name: "192.168.100.13"
+      host: "192.168.100.13"
+      port: "80"
+      pool: "web-http-pool"
+
+  - name: ADD POOL MEMBERS
+    bigip_pool_member:
+      provider: "{{provider}}"
+      state: "present"
+      name: "192.168.100.10"
+      host: "192.168.100.10"
+      port: "443"
+      pool: "web-https-pool"
+
+  - name: ADD POOL MEMBERS
+    bigip_pool_member:
+      provider: "{{provider}}"
+      state: "present"
+      name: "192.168.100.11"
+      host: "192.168.100.11"
+      port: "443"
+      pool: "web-https-pool"
+
+  - name: ADD POOL MEMBERS
+    bigip_pool_member:
+      provider: "{{provider}}"
+      state: "present"
+      name: "192.168.100.12"
+      host: "192.168.100.12"
+      port: "443"
+      pool: "web-https-pool"
+
+  - name: ADD POOL MEMBERS
+    bigip_pool_member:
+      provider: "{{provider}}"
+      state: "present"
+      name: "192.168.100.13"
+      host: "192.168.100.13"
+      port: "443"
+      pool: "web-https-pool"

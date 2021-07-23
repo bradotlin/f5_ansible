@@ -1,0 +1,32 @@
+---
+- name: BIG-IP SETUP
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+
+  - name: Setup provider
+    set_fact:
+      provider:
+        server: 10.1.1.4
+        user: admin
+        password: admin
+        server_port: 443
+        validate_certs: "no"
+
+  - name: CREATE POOL
+    bigip_pool:
+      provider: "{{provider}}"
+      name: "web-https-pool"
+      lb_method: "round-robin"
+      monitors: "/Common/http"
+      monitor_type: "and_list"
+
+  - name: CREATE POOL
+    bigip_pool:
+      provider: "{{provider}}"
+      name: "web-http-pool"
+      lb_method: "round-robin"
+      monitors: "/Common/http"
+      monitor_type: "and_list"

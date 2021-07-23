@@ -1,0 +1,39 @@
+---
+- name: BIG-IP SETUP
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+
+  - name: Setup provider
+    set_fact:
+      provider:
+        server: 10.1.1.4
+        user: admin
+        password: admin
+        server_port: 443
+        validate_certs: "no"
+
+  - name: CREATE NODES1
+    bigip_node:
+      provider: "{{provider}}"
+      host: 192.168.100.10
+      name: 192.168.100.10
+
+  - name: CREATE NODE2
+    bigip_node:
+      provider: "{{provider}}"
+      host: 192.168.100.11
+      name: 192.168.100.11
+
+  - name: CREATE NODES3
+    bigip_node:
+      provider: "{{provider}}"
+      host: 192.168.100.12
+      name: 192.168.100.12
+
+  - name: CREATE NODE4
+    bigip_node:
+      provider: "{{provider}}"
+      host: 192.168.100.13
+      name: 192.168.100.13

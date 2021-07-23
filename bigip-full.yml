@@ -1,0 +1,142 @@
+---
+- name: BIG-IP SETUP
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+
+  - name: Setup provider
+    set_fact:
+      provider:
+        server: 10.1.1.4
+        user: admin
+        password: admin
+        server_port: 443
+        validate_certs: "no"
+
+  - name: CREATE NODES1
+    bigip_node:
+      provider: "{{provider}}"
+      host: 192.168.100.10
+      name: 192.168.100.10
+
+  - name: CREATE NODE2
+    bigip_node:
+      provider: "{{provider}}"
+      host: 192.168.100.11
+      name: 192.168.100.11
+
+  - name: CREATE NODES3
+    bigip_node:
+      provider: "{{provider}}"
+      host: 192.168.100.12
+      name: 192.168.100.12
+
+  - name: CREATE NODE4
+    bigip_node:
+      provider: "{{provider}}"
+      host: 192.168.100.13
+      name: 192.168.100.13
+
+
+  - name: CREATE POOL
+    bigip_pool:
+      provider: "{{provider}}"
+      name: "web-https-pool"
+      lb_method: "round-robin"
+      monitors: "/Common/http"
+      monitor_type: "and_list"
+
+  - name: CREATE POOL
+    bigip_pool:
+      provider: "{{provider}}"
+      name: "web-http-pool"
+      lb_method: "round-robin"
+      monitors: "/Common/http"
+      monitor_type: "and_list"
+
+  - name: ADD POOL MEMBERS
+    bigip_pool_member:
+      provider: "{{provider}}"
+      state: "present"
+      name: "192.168.100.10"
+      host: "192.168.100.10"
+      port: "80"
+      pool: "web-http-pool"
+
+  - name: ADD POOL MEMBERS
+    bigip_pool_member:
+      provider: "{{provider}}"
+      state: "present"
+      name: "192.168.100.11"
+      host: "192.168.100.11"
+      port: "80"
+      pool: "web-http-pool"
+
+  - name: ADD POOL MEMBERS
+    bigip_pool_member:
+      provider: "{{provider}}"
+      state: "present"
+      name: "192.168.100.12"
+      host: "192.168.100.12"
+      port: "80"
+      pool: "web-http-pool"
+
+  - name: ADD POOL MEMBERS
+    bigip_pool_member:
+      provider: "{{provider}}"
+      state: "present"
+      name: "192.168.100.13"
+      host: "192.168.100.13"
+      port: "80"
+      pool: "web-http-pool"
+
+  - name: ADD POOL MEMBERS
+    bigip_pool_member:
+      provider: "{{provider}}"
+      state: "present"
+      name: "192.168.100.10"
+      host: "192.168.100.10"
+      port: "443"
+      pool: "web-https-pool"
+
+  - name: ADD POOL MEMBERS
+    bigip_pool_member:
+      provider: "{{provider}}"
+      state: "present"
+      name: "192.168.100.11"
+      host: "192.168.100.11"
+      port: "443"
+      pool: "web-https-pool"
+
+  - name: ADD POOL MEMBERS
+    bigip_pool_member:
+      provider: "{{provider}}"
+      state: "present"
+      name: "192.168.100.12"
+      host: "192.168.100.12"
+      port: "443"
+      pool: "web-https-pool"
+
+  - name: ADD POOL MEMBERS
+    bigip_pool_member:
+      provider: "{{provider}}"
+      state: "present"
+      name: "192.168.100.13"
+      host: "192.168.100.13"
+      port: "443"
+      pool: "web-https-pool"
+
+
+  - name: ADD VIRTUAL SERVER
+    bigip_virtual_server:
+      provider: "{{provider}}"
+      name: "vip"
+      destination: 10.1.10.99
+      port: "443"
+      enabled_vlans: "all"
+
+      all_profiles: ['http', 'clientssl', 'oneconnect']
+      pool: "web-https-pool"
+      snat: "Automap"
